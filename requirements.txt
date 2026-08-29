@@ -1,0 +1,6 @@
+groq
+google-genai
+python-dotenv
+ollama
+langgraph
+langchain-core
