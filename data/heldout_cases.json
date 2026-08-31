@@ -1,0 +1,32 @@
+[
+  {
+    "case_id": "HOLD-001",
+    "description": "A customer disputes a ₹3,200 transaction saying the same purchase was charged twice. Merchant records show two completed payments with different transaction IDs for the same order.",
+    "expected_reason_code": "duplicate",
+    "expected_severity": "medium"
+  },
+  {
+    "case_id": "HOLD-002",
+    "description": "A customer claims a ₹22,000 payment was unauthorized. The merchant has a successful 3-D Secure authentication record and the transaction originated from the customer's registered device.",
+    "expected_reason_code": "fraud",
+    "expected_severity": "high"
+  },
+  {
+    "case_id": "HOLD-003",
+    "description": "A customer disputes a ₹5,500 purchase because the delivered shoes were a different size and model from the product ordered. The order confirmation shows the originally selected size and model.",
+    "expected_reason_code": "not-as-described",
+    "expected_severity": "medium"
+  },
+  {
+    "case_id": "HOLD-004",
+    "description": "A customer disputes a ₹900 charge and says only that the transaction is unfamiliar. There is no information about whether the customer received a product, whether the transaction was duplicated, or whether the payment was actually unauthorized.",
+    "expected_reason_code": "other",
+    "expected_severity": "low"
+  },
+  {
+    "case_id": "HOLD-005",
+    "description": "A customer disputes a ₹16,000 order claiming it was never delivered. Courier tracking shows the package was delivered to the recorded shipping address, but there is no signature or photograph confirming who accepted it.",
+    "expected_reason_code": "not-received",
+    "expected_severity": "high"
+  }
+]

@@ -18,23 +18,33 @@ class LLMManager:
         self.gemini_key = os.environ.get("GEMINI_API_KEY")
         self.order = ["groq", "ollama", "gemini"]
 
-    def generate(self, prompt: str, system: str = "", exclude: list[str] = None) -> LLMResponse:
+    def generate(
+        self,
+        prompt: str,
+        system: str = "",
+        exclude: list[str] | None = None
+    ) -> LLMResponse:
+
         exclude = exclude or []
-        
+
         for provider in self.order:
             if provider in exclude:
                 continue
-            
+
             try:
                 if provider == "groq" and self.groq_key:
                     return self._call_groq(prompt, system)
-                if provider == "ollama":
-                    return self._call_ollama(prompt, system)
+
                 if provider == "gemini" and self.gemini_key:
                     return self._call_gemini(prompt, system)
+
+                if provider == "ollama":
+                    return self._call_ollama(prompt, system)
+
             except Exception as e:
                 print(f"[LLMManager] {provider} failed: {e} — falling back")
                 continue
+
         raise RuntimeError("All providers failed")
 
     def _call_groq(self, prompt, system):
