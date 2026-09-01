@@ -54,6 +54,7 @@ class LLMManager:
             model="openai/gpt-oss-20b",
             messages=[{"role": "system", "content": system},
                       {"role": "user", "content": prompt}],
+            temperature=0.1,
         )
         return LLMResponse(resp.choices[0].message.content, "groq")
 
