@@ -68,9 +68,17 @@ class LLMManager:
 
     def _call_ollama(self, prompt, system):
         import ollama
+
         resp = ollama.chat(
             model="llama3.2:3b",
-            messages=[{"role": "system", "content": system},
-                      {"role": "user", "content": prompt}],
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": prompt},
+            ],
+            format="json",
         )
-        return LLMResponse(resp["message"]["content"], "ollama")
+
+        return LLMResponse(
+            resp["message"]["content"],
+            "ollama"
+        )   
