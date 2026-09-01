@@ -10,9 +10,8 @@ DATA_DIR = Path(__file__).parent.parent / "data"
 def run_eval(filename: str, label: str):
     with open(DATA_DIR / filename, "r", encoding="utf-8") as f:
         cases = json.load(f)
-
     reason_correct = severity_correct = human_review_count = 0
-    for case in cases[:3]:
+    for case in cases:
         result = graph.invoke({
             "risk_description": case["description"],
             "analysis": "",
@@ -33,7 +32,13 @@ def run_eval(filename: str, label: str):
             "GOT:", result["reason_code"], result["severity"],
             "CONF:", result["confidence"],
             "EVIDENCE:", result["evidence_completeness"],
+            "PRESENT:", result["present_evidence"],      
+            "MISSING:", result["missing_evidence"],       
+            "PROVIDER:", result["provider_used"],         
+            "VERIFY_PROVIDER:", result["verification_provider"],
+            "SUPPORTING:", result["supporting_evidence"],  
             "REVIEW:", result["needs_human_review"],
+            "LLM_SEVERITY:", result["llm_severity"]
         )
         if result["reason_code"] == case["expected_reason_code"]:
             reason_correct += 1
