@@ -205,30 +205,3 @@ graph_builder.add_conditional_edges("check_evidence", route_after_evidence, {
 })
 graph_builder.add_edge("verify_risk", END)
 graph = graph_builder.compile()
-
-
-if __name__ == "__main__":
-    result = graph.invoke({
-    "risk_description": (
-        "Customer disputes a ₹12,000 transaction claiming the purchase was not authorized. "
-        "The merchant has no delivery confirmation, no customer communication history, "
-        "and no clear authentication record. The customer has previously made one dispute "
-        "but the available evidence is incomplete."
-    ),
-    "analysis": "",
-    "severity": "",
-    "llm_severity": "",
-    "evidence_completeness": 0.0,
-    "present_evidence": [],
-    "missing_evidence": [],
-    "reason_code": "",
-    "confidence": 0.0,
-    "supporting_evidence": [],
-    "weakening_evidence": [],
-    "recommendations": [],
-    "provider_used": "",
-    "verification_notes": "",
-    "verification_provider": "",
-    "needs_human_review": False
-    })
-    print(result)
