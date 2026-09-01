@@ -3,60 +3,70 @@
     "case_id": "RISK-001",
     "description": "Customer disputes a ₹4,500 charge claiming they never received the item. Order shows delivered with signature 3 days before the dispute was filed. No prior disputes from this customer in 18 months.",
     "expected_reason_code": "not-received",
+    "expected_severity": "medium",
     "evidence_strength": "strong"
   },
   {
     "case_id": "RISK-002",
     "description": "Customer claims a ₹18,000 card transaction was unauthorized. The merchant has no authentication record, no device information, and no customer communication confirming the purchase.",
     "expected_reason_code": "fraud",
+    "expected_severity": "high",
     "evidence_strength": "weak"
   },
   {
     "case_id": "RISK-003",
     "description": "Customer disputes a ₹7,200 purchase stating the received laptop model has different specifications from the product advertised. Product listing and customer photographs are available.",
     "expected_reason_code": "not-as-described",
+    "expected_severity": "medium",
     "evidence_strength": "strong"
   },
   {
     "case_id": "RISK-004",
     "description": "Customer disputes a ₹2,500 transaction because the same amount appears to have been charged twice. Merchant records show two successful payment attempts for the same order within two minutes.",
     "expected_reason_code": "duplicate",
+    "expected_severity": "low",
     "evidence_strength": "strong"
   },
   {
     "case_id": "RISK-005",
     "description": "Customer disputes a ₹9,000 purchase claiming the transaction was unauthorized. Merchant has a valid OTP authentication record and device information matching the customer's previous purchases, but the customer continues to deny making the transaction.",
     "expected_reason_code": "fraud",
+    "expected_severity": "medium",
     "evidence_strength": "conflicting"
   },
   {
     "case_id": "RISK-006",
     "description": "Customer claims a ₹3,800 order was never delivered. Tracking shows the package is still in transit and there is no delivery confirmation yet.",
     "expected_reason_code": "not-received",
+    "expected_severity": "medium",
     "evidence_strength": "medium"
   },
   {
     "case_id": "RISK-007",
     "description": "Customer disputes a ₹15,000 payment saying the product was damaged on arrival. The merchant has photographs from before shipment showing the product intact, while the customer has photographs showing damage after delivery.",
     "expected_reason_code": "not-as-described",
+    "expected_severity": "high",
     "evidence_strength": "conflicting"
   },
   {
     "case_id": "RISK-008",
     "description": "Customer disputes a ₹1,200 transaction but provides no explanation beyond saying they do not recognize the charge. Merchant records contain only the transaction ID and amount.",
     "expected_reason_code": "other",
+    "expected_severity": "low",
     "evidence_strength": "weak"
   },
   {
     "case_id": "RISK-009",
     "description": "Customer claims a ₹25,000 transaction was unauthorized. The transaction was authenticated using the customer's registered device, the billing address matches historical purchases, and the customer has made five similar successful purchases from the same merchant.",
     "expected_reason_code": "fraud",
+    "expected_severity": "high",
     "evidence_strength": "strong"
   },
   {
     "case_id": "RISK-010",
     "description": "Customer disputes a ₹6,500 transaction claiming non-receipt. Tracking says delivered, but the delivery address differs from the shipping address recorded in the order and there is no signature.",
     "expected_reason_code": "not-received",
+    "expected_severity": "medium",
     "evidence_strength": "conflicting"
   }
 ]
