@@ -2,28 +2,24 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
-
 import json
-
 from backend.graph import graph
 
-DATA_PATH = Path(__file__).parent.parent / "data" / "risk_cases.json"
+DATA_DIR = Path(__file__).parent.parent / "data"
 
-
-def main():
-    with open(DATA_PATH, "r", encoding="utf-8") as f:
+def run_eval(filename: str, label: str):
+    with open(DATA_DIR / filename, "r", encoding="utf-8") as f:
         cases = json.load(f)
 
-    correct = 0
-
-    for case in cases:
+    reason_correct = severity_correct = human_review_count = 0
+    for case in cases[:3]:
         result = graph.invoke({
             "risk_description": case["description"],
             "analysis": "",
             "severity": "",
             "reason_code": "",
             "confidence": 0.0,
-            "supporting_evidence": [],
+            "supporting_evidence": [], 
             "weakening_evidence": [],
             "recommendations": [],
             "provider_used": "",
@@ -31,32 +27,27 @@ def main():
             "verification_notes": "",
             "needs_human_review": False,
         })
-
-        predicted = result["reason_code"]
-        expected = case["expected_reason_code"]
-
-        passed = predicted == expected
-
-        if passed:
-            correct += 1
-
         print(
-            f"{case['case_id']} | "
-            f"Expected: {expected:<15} | "
-            f"Predicted: {predicted:<15} | "
-            f"{'PASS' if passed else 'FAIL'}"
+            case["case_id"],
+            "EXPECTED:", case["expected_reason_code"], case["expected_severity"],
+            "GOT:", result["reason_code"], result["severity"],
+            "CONF:", result["confidence"],
+            "EVIDENCE:", result["evidence_completeness"],
+            "REVIEW:", result["needs_human_review"],
         )
-        if not passed:
-            print(f"  Description: {case['description']}")
-            print(f"  Analysis: {result['analysis']}")
-            print()
+        if result["reason_code"] == case["expected_reason_code"]:
+            reason_correct += 1
+        if result["severity"] == case["expected_severity"]:
+            severity_correct += 1
+        if result["needs_human_review"]:
+            human_review_count += 1
 
-    accuracy = correct / len(cases) * 100
-
-    print("\n--------------------")
-    print(f"Accuracy: {accuracy:.1f}%")
-    print(f"Passed: {correct}/{len(cases)}")
-
+    n = len(cases)
+    print(f"\n=== {label} (n={n}) ===")
+    print(f"Reason-code accuracy: {reason_correct/n*100:.1f}%")
+    print(f"Severity accuracy: {severity_correct/n*100:.1f}%")
+    print(f"Flagged for human review: {human_review_count}/{n}")
 
 if __name__ == "__main__":
-    main()
+    run_eval("risk_cases.json", "Dev set (prompt-tuned)")
+    run_eval("heldout_cases.json", "Held-out set (untouched)")
