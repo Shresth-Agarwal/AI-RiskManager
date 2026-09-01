@@ -1,6 +1,4 @@
 # backend/evidence_requirements.py
-# Simplified from Visa/Mastercard Compelling Evidence guidance — 
-# not legal advice, just a structured approximation for demo purposes.
 
 EVIDENCE_REQUIREMENTS = {
     "not-received": [

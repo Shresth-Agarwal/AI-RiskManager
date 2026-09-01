@@ -82,26 +82,3 @@ def save_report(report_text: str, case_id: str, output_dir: str = "reports") -> 
     with open(path, "w", encoding="utf-8") as f:
         f.write(report_text)
     return path
-
-
-if __name__ == "__main__":
-    from backend.graph import graph
-
-    result = graph.invoke({
-        "risk_description": (
-            "Customer disputes a ₹12,000 transaction claiming the purchase was not authorized. "
-            "The merchant has no delivery confirmation, no customer communication history, "
-            "and no clear authentication record. The customer has previously made one dispute "
-            "but the available evidence is incomplete."
-        ),
-        "analysis": "", "severity": "", "llm_severity": "",
-        "evidence_completeness": 0.0, "present_evidence": [], "missing_evidence": [],
-        "reason_code": "", "confidence": 0.0, "supporting_evidence": [],
-        "weakening_evidence": [], "recommendations": [], "provider_used": "",
-        "verification_notes": "", "verification_provider": "", "needs_human_review": False,
-    })
-
-    report = generate_report(result, case_id="DEMO-001")
-    print(report)
-    path = save_report(report, "DEMO-001")
-    print(f"\nSaved to {path}")

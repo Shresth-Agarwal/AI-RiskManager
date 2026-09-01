@@ -26,20 +26,7 @@ def run_eval(filename: str, label: str):
             "verification_notes": "",
             "needs_human_review": False,
         })
-        print(
-            case["case_id"],
-            "EXPECTED:", case["expected_reason_code"], case["expected_severity"],
-            "GOT:", result["reason_code"], result["severity"],
-            "CONF:", result["confidence"],
-            "EVIDENCE:", result["evidence_completeness"],
-            "PRESENT:", result["present_evidence"],      
-            "MISSING:", result["missing_evidence"],       
-            "PROVIDER:", result["provider_used"],         
-            "VERIFY_PROVIDER:", result["verification_provider"],
-            "SUPPORTING:", result["supporting_evidence"],  
-            "REVIEW:", result["needs_human_review"],
-            "LLM_SEVERITY:", result["llm_severity"]
-        )
+        
         if result["reason_code"] == case["expected_reason_code"]:
             reason_correct += 1
         if result["severity"] == case["expected_severity"]:
