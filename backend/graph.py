@@ -1,6 +1,7 @@
 from typing import TypedDict
 from langgraph.graph import StateGraph, START, END
 from backend.llm_manager import LLMManager
+from backend.evidence_requirements import check_evidence_completeness
 import json
 
 llm = LLMManager()
@@ -30,6 +31,15 @@ Reason-code rules:
 - other: Use when the dispute does not clearly match any of the above categories.
   A customer saying they "do not recognize" a transaction by itself is NOT enough
   to classify it as fraud unless the case explicitly indicates unauthorized use.
+  
+Severity rules:
+- Severity reflects the financial and reputational impact to the merchant
+  if this dispute is decided against them.
+- high: transaction amount is large (₹10,000+) AND evidence favors the customer,
+  OR the case involves a repeat/pattern risk.
+- medium: moderate amount, OR evidence is mixed/conflicting.
+- low: small amount AND evidence clearly favors the merchant, OR the dispute
+  is vague/unsubstantiated.
 
 Important:
 - Classify based primarily on the customer's stated dispute reason.
@@ -46,8 +56,12 @@ class RiskState(TypedDict):
     risk_description: str
     analysis: str
     severity: str
+    llm_severity: str
     reason_code: str
     confidence: float
+    evidence_completeness: float
+    present_evidence: list[str]
+    missing_evidence: list[str]
     supporting_evidence: list[str]
     weakening_evidence: list[str]
     recommendations: list[str]
@@ -77,6 +91,7 @@ def analyze_risk(state: RiskState):
 
         return {
             "analysis": result.text,
+            "llm_severity": parsed.get("severity", "medium"),
             "severity": parsed.get("severity", "medium"),
             "reason_code": parsed.get("reason_code", "other"),
             "confidence": float(parsed.get("confidence", 0.0)),
@@ -94,6 +109,7 @@ def analyze_risk(state: RiskState):
 
         return {
             "analysis": "Analysis failed: provider returned invalid JSON.",
+            "llm_severity": "medium",
             "severity": "medium",
             "reason_code": "other",
             "confidence": 0.0,
@@ -103,8 +119,34 @@ def analyze_risk(state: RiskState):
             "provider_used": result.provider,
         }
 
-def route_by_confidence(state: RiskState):
-    return "verify_risk" if state["confidence"] < 0.7 else END
+def check_evidence(state: RiskState):
+    result = check_evidence_completeness(
+        state["reason_code"],
+        state["supporting_evidence"]
+    )
+
+    completeness = result["completeness"]
+
+    # Preserve the LLM severity.
+    # Evidence completeness is used for escalation,
+    # not to directly downgrade severity.
+    grounded_severity = state["llm_severity"]
+
+    return {
+        "evidence_completeness": completeness,
+        "present_evidence": result["present"],
+        "missing_evidence": result["missing"],
+        "severity": grounded_severity,
+    }
+
+def route_after_evidence(state: RiskState):
+    if (
+        state["confidence"] < 0.7
+        or state["evidence_completeness"] < 0.5
+    ):
+        return "verify_risk"
+
+    return END
 
 VERIFY_SYSTEM_PROMPT = """
 You are a second-pass reviewer checking another analyst's risk assessment.
@@ -141,16 +183,23 @@ def verify_risk(state: RiskState):
             "needs_human_review": True,
         }
     return {
-        "verification_notes": parsed["verification_notes"],
+        "verification_notes": parsed.get(
+            "verification_notes",
+            "Verification response was incomplete."
+        ),
         "verification_provider": result.provider,
-        "needs_human_review": parsed["needs_human_review"]
+        "needs_human_review": parsed.get("needs_human_review", True),
     }
 
 graph_builder = StateGraph(RiskState)
 graph_builder.add_node("analyze_risk", analyze_risk)
+graph_builder.add_node("check_evidence", check_evidence)
 graph_builder.add_node("verify_risk", verify_risk)
+
 graph_builder.add_edge(START, "analyze_risk")
-graph_builder.add_conditional_edges("analyze_risk", route_by_confidence, {
+graph_builder.add_edge("analyze_risk", "check_evidence")
+
+graph_builder.add_conditional_edges("check_evidence", route_after_evidence, {
     "verify_risk": "verify_risk",
     END: END,
 })
@@ -168,6 +217,10 @@ if __name__ == "__main__":
     ),
     "analysis": "",
     "severity": "",
+    "llm_severity": "",
+    "evidence_completeness": 0.0,
+    "present_evidence": [],
+    "missing_evidence": [],
     "reason_code": "",
     "confidence": 0.0,
     "supporting_evidence": [],
