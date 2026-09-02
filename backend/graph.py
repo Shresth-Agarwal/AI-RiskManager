@@ -140,6 +140,9 @@ def check_evidence(state: RiskState):
     }
 
 def route_after_evidence(state: RiskState):
+    if state["reason_code"] == "other":
+        return "verify_risk"
+
     if (
         state["confidence"] < 0.7
         or state["evidence_completeness"] < 0.5
