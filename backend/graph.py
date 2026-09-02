@@ -1,7 +1,8 @@
 from typing import TypedDict
 from langgraph.graph import StateGraph, START, END
 from backend.llm_manager import LLMManager
-from backend.evidence_requirements import check_evidence_completeness
+from backend.evidence_requirements import check_evidence_completeness, check_evidence_completeness_grounded
+
 import json
 
 llm = LLMManager()
@@ -62,6 +63,7 @@ class RiskState(TypedDict):
     evidence_completeness: float
     present_evidence: list[str]
     missing_evidence: list[str]
+    evidence_justifications: dict
     supporting_evidence: list[str]
     weakening_evidence: list[str]
     recommendations: list[str]
@@ -119,24 +121,23 @@ def analyze_risk(state: RiskState):
             "provider_used": result.provider,
         }
 
+
 def check_evidence(state: RiskState):
-    result = check_evidence_completeness(
-        state["reason_code"],
-        state["supporting_evidence"]
+    result = check_evidence_completeness_grounded(
+        llm, state["risk_description"], state["reason_code"]
     )
-
-    completeness = result["completeness"]
-
-    # Preserve the LLM severity.
-    # Evidence completeness is used for escalation,
-    # not to directly downgrade severity.
-    grounded_severity = state["llm_severity"]
+    if result is None:
+        result = check_evidence_completeness(
+            state["reason_code"], state["supporting_evidence"]
+        )
+        result["justifications"] = {}
 
     return {
-        "evidence_completeness": completeness,
+        "evidence_completeness": result["completeness"],
         "present_evidence": result["present"],
         "missing_evidence": result["missing"],
-        "severity": grounded_severity,
+        "evidence_justifications": result.get("justifications", {}),
+        "severity": state["llm_severity"],
     }
 
 def route_after_evidence(state: RiskState):
