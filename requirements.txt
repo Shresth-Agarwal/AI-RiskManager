@@ -6,3 +6,5 @@ langgraph
 langchain-core
 fastapi[standard]
 uvicorn
+streamlit
+requests
