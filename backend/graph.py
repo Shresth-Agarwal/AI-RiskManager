@@ -41,6 +41,8 @@ Severity rules:
 - medium: moderate amount, OR evidence is mixed/conflicting.
 - low: small amount AND evidence clearly favors the merchant, OR the dispute
   is vague/unsubstantiated.
+- Duplicate charges with clear, strong evidence are typically low severity —
+  they are straightforward to resolve and rarely result in merchant loss.
 
 Important:
 - Classify based primarily on the customer's stated dispute reason.
