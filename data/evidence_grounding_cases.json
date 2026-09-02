@@ -1,0 +1,50 @@
+[
+  {
+    "case_id": "GROUND-001",
+    "reason_code": "not-received",
+    "description": "Customer says the order never arrived. Merchant provided delivery confirmation showing it was signed for.",
+    "expected": {"delivery_confirmation": "present", "tracking_matches_shipping_address": "unknown", "signature_or_photo_proof": "present"}
+  },
+  {
+    "case_id": "GROUND-002",
+    "reason_code": "not-received",
+    "description": "Customer disputes non-receipt. Merchant has not provided any delivery confirmation, tracking information matching the customer's shipping address, or signature or photo proof of delivery.",
+    "expected": {"delivery_confirmation": "absent", "tracking_matches_shipping_address": "absent", "signature_or_photo_proof": "absent"}
+  },
+  {
+    "case_id": "GROUND-003",
+    "reason_code": "not-received",
+    "description": "Customer claims the item never showed up. No further details were provided by either party.",
+    "expected": {"delivery_confirmation": "unknown", "tracking_matches_shipping_address": "unknown", "signature_or_photo_proof": "unknown"}
+  },
+  {
+    "case_id": "GROUND-004",
+    "reason_code": "not-received",
+    "description": "Customer says the package never arrived. Courier records show the shipment reached the exact address on the customer's order, confirmed via GPS-tagged tracking.",
+    "expected": {"delivery_confirmation": "unknown", "tracking_matches_shipping_address": "present", "signature_or_photo_proof": "unknown"}
+  },
+  {
+    "case_id": "GROUND-005",
+    "reason_code": "fraud",
+    "description": "Customer claims the transaction was unauthorized. The merchant has no OTP record and no way to confirm the device used, though the customer has bought from this merchant many times before.",
+    "expected": {"authentication_record": "absent", "device_fingerprint_match": "absent", "purchase_history_consistency": "present"}
+  },
+  {
+    "case_id": "GROUND-006",
+    "reason_code": "fraud",
+    "description": "Customer disputes the charge as unauthorized. Merchant states the purchase matched the customer's usual buying pattern, but did not comment on authentication or device details.",
+    "expected": {"authentication_record": "unknown", "device_fingerprint_match": "unknown", "purchase_history_consistency": "present"}
+  },
+  {
+    "case_id": "GROUND-007",
+    "reason_code": "not-as-described",
+    "description": "Customer says the item doesn't match the listing. No photos, listing screenshots, or pre-shipment records were shared by either side.",
+    "expected": {"product_listing_screenshot": "absent", "customer_photos_or_description_of_issue": "absent", "pre_shipment_condition_proof": "absent"}
+  },
+  {
+    "case_id": "GROUND-008",
+    "reason_code": "duplicate",
+    "description": "Customer says they were billed twice. Merchant records confirm two separate transaction IDs processed 90 seconds apart for the same cart.",
+    "expected": {"transaction_ids_for_both_charges": "present", "timestamp_proximity": "present"}
+  }
+]
