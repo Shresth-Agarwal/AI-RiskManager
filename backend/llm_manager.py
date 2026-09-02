@@ -54,7 +54,7 @@ class LLMManager:
             model="openai/gpt-oss-20b",
             messages=[{"role": "system", "content": system},
                       {"role": "user", "content": prompt}],
-            temperature=0.1,
+            temperature=0.0,
         )
         return LLMResponse(resp.choices[0].message.content, "groq")
 
@@ -64,6 +64,7 @@ class LLMManager:
         resp = client.models.generate_content(
             model="gemini-3.1-flash-lite",
             contents=f"{system}\n\n{prompt}",
+            config={"temperature": 0.0},
         )
         return LLMResponse(resp.text, "gemini")
 
@@ -77,6 +78,7 @@ class LLMManager:
                 {"role": "user", "content": prompt},
             ],
             format="json",
+            options={"temperature": 0.0},
         )
 
         return LLMResponse(
