@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api.schemas import RiskRequest
+from api.schemas import RiskRequest, RiskResponse
 from backend.graph import graph
 from backend.report import generate_report
 
@@ -16,7 +16,7 @@ def health():
     return {"status": "ok"}
 
 
-@router.post("/analyze")
+@router.post("/analyze", response_model=RiskResponse)
 def analyze_risk(request: RiskRequest):
     result = graph.invoke({
         "risk_description": request.description,
@@ -39,7 +39,8 @@ def analyze_risk(request: RiskRequest):
 
     report = generate_report(result)
 
-    return {
-        "result": result,
-        "report": report,
-    }
+    return RiskResponse(
+        **result,
+        report=report,
+        case_id="N/A",
+    )
