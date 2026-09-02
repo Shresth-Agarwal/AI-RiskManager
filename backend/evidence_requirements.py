@@ -198,10 +198,10 @@ def ground_evidence(
     for key in descriptions:
         entry = parsed.get(key, {})
 
-        status = entry.get(
-            "status",
-            "unknown",
-        )
+        if not isinstance(entry, dict):
+            entry = {}
+
+        status = entry.get("status", "unknown")
 
         if status not in (
             "present",
