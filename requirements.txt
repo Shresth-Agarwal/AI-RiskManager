@@ -8,3 +8,4 @@ fastapi[standard]
 uvicorn
 streamlit
 requests
+reportLab

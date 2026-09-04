@@ -1,5 +1,5 @@
 import streamlit as st
-
+from frontend.pdf_export import generate_risk_report_pdf
 
 def render_verdict(result):
     severity = result["severity"].lower()
@@ -174,6 +174,17 @@ def render_review_flag(result: dict) -> None:
 
 
 def render_full_report(result: dict) -> None:
+    pdf_bytes = generate_risk_report_pdf(result)
+
+    st.download_button(
+        label="↓ Export Case PDF",
+        data=pdf_bytes,
+        file_name=f"{result.get('case_id', 'risk_assessment')}.pdf",
+        mime="application/pdf",
+        type="secondary",
+        key=f"download_pdf_{result.get('case_id', 'unknown')}",
+    )
+
     render_verdict(result)
     st.divider()
     render_evidence(result)
