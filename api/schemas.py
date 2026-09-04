@@ -43,21 +43,14 @@ class BatchRiskCase(BaseModel):
 
 
 class BatchRiskRequest(BaseModel):
-    cases: list[BatchRiskCase] = Field(
-        ...,
-        min_length=1,
-        description="List of dispute cases to analyze",
-    )
+    cases: list[BatchRiskCase]
 
 
 class BatchRiskResponse(BaseModel):
     results: list[RiskResponse]
-
     total_cases: int
     total_amount: float
-
     severity_distribution: dict[str, int]
     reason_distribution: dict[str, int]
-
     human_review_rate: float
     average_evidence_completeness: float
