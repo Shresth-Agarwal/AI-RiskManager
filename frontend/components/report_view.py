@@ -101,11 +101,11 @@ def render_evidence(result: dict) -> None:
 {render_items(missing)}
 </div>
 <div class="evidence-card evidence-supporting">
-<div class="evidence-card-title">＋ SUPPORTING EVIDENCE</div>
+<div class="evidence-card-title">✅ SUPPORTING EVIDENCE</div>
 {render_items(supporting)}
 </div>
 <div class="evidence-card evidence-weakening">
-<div class="evidence-card-title">− WEAKENING EVIDENCE</div>
+<div class="evidence-card-title">❌ WEAKENING EVIDENCE</div>
 {render_items(weakening)}
 </div>
 </div>
@@ -118,15 +118,40 @@ def render_evidence(result: dict) -> None:
 
 
 def render_recommendations(result: dict) -> None:
-    st.subheader("Recommendations")
+    st.markdown(
+        '<div class="section-label">RECOMMENDATIONS</div>',
+        unsafe_allow_html=True,
+    )
 
     recommendations = result.get("recommendations", [])
 
-    if recommendations:
-        for recommendation in recommendations:
-            st.write(f"- {recommendation}")
+    if not recommendations:
+        html_content = """
+<div class="recommendations-card">
+<div class="recommendation-empty">No recommendations provided.</div>
+</div>
+"""
     else:
-        st.write("No recommendations provided.")
+        recommendation_items = "".join(
+            f"""
+<div class="recommendation-item">
+<div class="recommendation-number">{index:02d}</div>
+<div class="recommendation-text">{recommendation}</div>
+</div>
+"""
+            for index, recommendation in enumerate(recommendations, start=1)
+        )
+
+        html_content = f"""
+<div class="recommendations-card">
+{recommendation_items}
+</div>
+"""
+
+    st.markdown(
+        html_content,
+        unsafe_allow_html=True,
+    )
 
 
 def render_review_flag(result: dict) -> None:

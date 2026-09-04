@@ -431,7 +431,78 @@ def apply_global_styles():
             opacity: 0.45;
             font-size: 0.9rem;
         }
+        
+        
+        /* =========================================================
+        Recommendations
+        ========================================================= */
 
+        .recommendations-card {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 0.5rem 1.5rem;
+            background: rgba(255, 255, 255, 0.015);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.22);
+            margin-bottom: 1rem;
+        }
+
+        .recommendation-item {
+            display: grid;
+            grid-template-columns: 3.5rem 1fr;
+            align-items: start;
+            gap: 1rem;
+            padding: 1.35rem 0;
+        }
+
+        .recommendation-item + .recommendation-item {
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .recommendation-number {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            opacity: 0.4;
+            padding-top: 0.2rem;
+        }
+
+        .recommendation-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            font-weight: 500;
+            color: #e5e7eb;
+        }
+
+        .recommendation-empty {
+            padding: 1.5rem 0.25rem;
+            font-size: 0.95rem;
+            opacity: 0.45;
+        }
+
+
+        /* =========================================================
+        Recommendations — Responsive
+        ========================================================= */
+
+        @media (max-width: 800px) {
+
+            .recommendations-card {
+                padding: 0.25rem 1rem;
+                border-radius: 18px;
+            }
+
+            .recommendation-item {
+                grid-template-columns: 2.5rem 1fr;
+                gap: 0.75rem;
+                padding: 1.15rem 0;
+            }
+
+            .recommendation-text {
+                font-size: 0.95rem;
+                line-height: 1.55;
+            }
+
+        }
 
         /* =========================================================
            Responsive
