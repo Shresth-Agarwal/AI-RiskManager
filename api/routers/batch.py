@@ -53,6 +53,7 @@ def analyze_batch(request: BatchRiskRequest):
                 **result,
                 report=report,
                 case_id=case_id,
+                amount=case.amount,
             )
         )
 

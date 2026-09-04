@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 
 from frontend.api_client import analyze_batch
+from frontend.components.report_view import render_full_report
 
 
 def render_portfolio():
@@ -144,6 +145,7 @@ def render_portfolio_results(result: dict):
         rows.append(
             {
                 "Case ID": case["case_id"],
+                "Amount": f"₹{case['amount']:,.0f}",
                 "Severity": case["severity"].upper(),
                 "Reason": case["reason_code"],
                 "Confidence": f"{case['confidence'] * 100:.0f}%",
@@ -163,3 +165,21 @@ def render_portfolio_results(result: dict):
         use_container_width=True,
         hide_index=True,
     )
+    
+    st.divider()
+
+    st.subheader("Case Details")
+
+    case_options = {
+        case["case_id"]: case
+        for case in result["results"]
+    }
+
+    selected_case_id = st.selectbox(
+        "Select a case to inspect",
+        options=list(case_options.keys()),
+    )
+
+    selected_case = case_options[selected_case_id]
+
+    render_full_report(selected_case)
