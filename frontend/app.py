@@ -9,10 +9,11 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-
+from frontend.style import apply_global_styles
 from frontend.api_client import analyze_case, check_health
 from frontend.components.report_view import render_full_report
 from frontend.components.portfolio_view import render_portfolio
+from frontend.components.hero import render_hero
 
 st.set_page_config(
     page_title="AI Risk Manager",
@@ -20,11 +21,9 @@ st.set_page_config(
     layout="wide",
 )
 
+apply_global_styles()
 
-st.title("🛡️ AI Risk Manager")
-st.caption(
-    "AI-powered payment dispute risk assessment"
-)
+render_hero()
 
 
 # Backend health

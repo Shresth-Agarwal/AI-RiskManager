@@ -11,7 +11,7 @@ class RiskRequest(BaseModel):
 
 class RiskResponse(BaseModel):
     case_id: str
-    amount: float
+    amount: float | None = None
     severity: str
     llm_severity: str
     reason_code: str
