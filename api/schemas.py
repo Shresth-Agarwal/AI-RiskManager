@@ -26,3 +26,37 @@ class RiskResponse(BaseModel):
     verification_provider: str
     provider_used: str
     report: str
+
+
+class BatchRiskCase(BaseModel):
+    description: str = Field(
+        ...,
+        min_length=10,
+        description="Natural-language description of the transaction dispute",
+    )
+    amount: float = Field(
+        ...,
+        ge=0,
+        description="Disputed transaction amount",
+    )
+
+
+class BatchRiskRequest(BaseModel):
+    cases: list[BatchRiskCase] = Field(
+        ...,
+        min_length=1,
+        description="List of dispute cases to analyze",
+    )
+
+
+class BatchRiskResponse(BaseModel):
+    results: list[RiskResponse]
+
+    total_cases: int
+    total_amount: float
+
+    severity_distribution: dict[str, int]
+    reason_distribution: dict[str, int]
+
+    human_review_rate: float
+    average_evidence_completeness: float
