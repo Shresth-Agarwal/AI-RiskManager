@@ -1,0 +1,4 @@
+description,amount
+"Customer claims they did not receive the order. Merchant has no delivery confirmation.",12500
+"Customer claims they were charged twice for the same purchase. Two transaction IDs exist.",3200
+"Customer says the product was significantly different from the original listing.",7500
