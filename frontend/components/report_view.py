@@ -21,8 +21,7 @@ def render_verdict(result):
         unsafe_allow_html=True,
     )
 
-    # CRITICAL: Keeping all lines flushed completely to the left margin 
-    # stops Streamlit from treating it as a markdown code block.
+
     html_content = f"""
 <div class="risk-card risk-{severity}">
 <div class="risk-card-top">

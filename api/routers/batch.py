@@ -56,7 +56,13 @@ def analyze_batch(request: BatchRiskRequest):
                 amount=case.amount,
             )
         )
-
+    if not results:
+        return BatchRiskResponse(
+            results=[], total_cases=0, total_amount=0,
+            severity_distribution={"high": 0, "medium": 0, "low": 0},
+            reason_distribution={}, human_review_rate=0.0,
+            average_evidence_completeness=0.0,
+        )
     total_cases = len(results)
     total_amount = sum(case.amount for case in request.cases)
 
