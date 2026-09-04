@@ -12,6 +12,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from frontend.api_client import analyze_case, check_health
 from frontend.components.report_view import render_full_report
+from frontend.components.portfolio_view import render_portfolio
 
 st.set_page_config(
     page_title="AI Risk Manager",
@@ -39,57 +40,45 @@ else:
     st.stop()
 
 
-# Case input
-
-st.subheader("Analyze Payment Dispute")
-
-description = st.text_area(
-    "Dispute description",
-    height=180,
-    placeholder=(
-        "Describe the customer's payment dispute..."
-    ),
+tab_single, tab_portfolio = st.tabs(
+    ["Single Case", "Portfolio"]
 )
 
+with tab_single:
+    st.subheader("Analyze Payment Dispute")
 
-analyze_button = st.button(
-    "Analyze Case",
-    type="primary",
-)
+    description = st.text_area(
+        "Dispute description",
+        height=180,
+        placeholder=(
+            "Describe the customer's payment dispute..."
+        ),
+    )
 
+    analyze_button = st.button(
+        "Analyze Case",
+        type="primary",
+    )
 
-# Analysis
-
-if analyze_button:
-
-    if not description.strip():
-        st.warning(
-            "Please enter a dispute description."
-        )
-        st.stop()
-
-    with st.spinner("Analyzing dispute..."):
-
-        try:
-            result = analyze_case(
-                description.strip()
-            )
-
-            st.session_state["risk_result"] = result
-
-        except Exception as exc:
-            st.error(
-                f"Analysis failed: {exc}"
-            )
+    if analyze_button:
+        if not description.strip():
+            st.warning("Please enter a dispute description.")
             st.stop()
 
+        with st.spinner("Analyzing dispute..."):
+            try:
+                result = analyze_case(description.strip())
+                st.session_state["risk_result"] = result
+            except Exception as exc:
+                st.error(f"Analysis failed: {exc}")
+                st.stop()
 
-# Results
+    if "risk_result" in st.session_state:
+        st.divider()
+        render_full_report(
+            st.session_state["risk_result"]
+        )
 
-if "risk_result" in st.session_state:
 
-    st.divider()
-
-    render_full_report(
-        st.session_state["risk_result"]
-    )
+with tab_portfolio:
+    render_portfolio()

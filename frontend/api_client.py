@@ -23,6 +23,16 @@ def analyze_case(description: str) -> dict:
     return resp.json()
 
 
+def analyze_batch(cases: list[dict]) -> dict:
+    resp = requests.post(
+        f"{API_BASE_URL}/risk/batch",
+        json={"cases": cases},
+        timeout=600,
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+
 def check_health() -> bool:
     try:
         resp = requests.get(
